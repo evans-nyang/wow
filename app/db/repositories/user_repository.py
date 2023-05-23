@@ -36,3 +36,13 @@ class UserRepository:
     def get_all_users():
         session = Session()
         return session.query(User).all()
+    
+    @staticmethod
+    def get_user_by_username(username):
+        session = Session()
+        return session.query(User).filter(User.username == username).first()
+    
+    @staticmethod
+    def get_user_by_email(email):
+        session = Session()
+        return session.query(User).filter(User.email == email).first()
