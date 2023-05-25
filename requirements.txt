@@ -8,3 +8,5 @@ pgcli
 passlib
 python-jose[cryptography]
 python-multipart
+cachetools
+python-dotenv
