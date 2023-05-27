@@ -1,10 +1,10 @@
-from app.db.base import Session
+from app.db.base import SessionLocal
 # from app.db.base import Base
 from app.db.models.menu import Item
 
 
 class ItemRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: SessionLocal):
         self.db = db
 
     def get_items(self, skip: int = 0, limit: int = 100):
