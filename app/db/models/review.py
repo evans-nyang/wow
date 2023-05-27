@@ -1,5 +1,3 @@
-# db/models/review.py
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from app.db.base import Base

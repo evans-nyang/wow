@@ -1,5 +1,3 @@
-# db/models/payment.py
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from app.db.base import Base
