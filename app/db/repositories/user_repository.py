@@ -4,8 +4,8 @@ from app.db.base import SessionLocal
 
 class UserRepository:
     @staticmethod
-    def create_user(user_data):
-        user = User(**user_data)
+    def create_user(username, email, password):
+        user = User(username=username, email=email, password=password)
         session = SessionLocal()
         session.add(user)
         session.commit()
