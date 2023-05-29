@@ -5,8 +5,8 @@ class UserService:
     def __init__(self):
         self.user_repository = UserRepository()
 
-    def create_user(self, user_data):
-        return self.user_repository.create_user(user_data)
+    def create_user(self, username, email, password):
+        return self.user_repository.create_user(username, email, password)
 
     def update_user(self, user_id, updated_data):
         user = self.get_user_by_id(user_id)

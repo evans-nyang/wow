@@ -8,11 +8,11 @@ class AuthService:
     def __init__(self):
         self.user_service = UserService()
 
-    def register_user(self, user_data: dict):
+    def register_user(self, username: str, email: str, password: str):
         # Extract user credentials from user_data
-        username = user_data.get("username")
-        email = user_data.get("email")
-        password = user_data.get("password")
+        # username = user_data.get("username")
+        # email = user_data.get("email")
+        # password = user_data.get("password")
 
         # Check if the username or email already exists
         if self.user_service.get_user_by_username(username):
@@ -23,9 +23,9 @@ class AuthService:
         # Hash the password
         hashed_password = hash_password(password)
 
-        # Create the user
-        user_data["password"] = hashed_password  # Update user_data with hashed password
-        user = self.user_service.create_user(user_data)
+        # Create the user::user_data["password"]
+        password = hashed_password  # Update user_data with hashed password
+        user = self.user_service.create_user(username, email, password)
         return user
 
     def login(self, username: str, password: str) -> str:
