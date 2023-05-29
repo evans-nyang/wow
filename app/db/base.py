@@ -1,10 +1,11 @@
-from sqlalchemy.ext.declarative import declarative_base
-
 import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
+load_dotenv()
 # Database connection URL
 DB_URL = os.environ.get('DATABASE_URL')
 if DB_URL is None:
@@ -13,5 +14,6 @@ if DB_URL is None:
 # Create the database engine
 engine = create_engine(DB_URL)
 
-# Create a session factory
-Session = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
