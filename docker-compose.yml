@@ -8,6 +8,9 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./pglogs:/var/log/postgresql # Add a volume for the logs
     ports:
       - ${PORT}:${PORT}
     env_file:
@@ -32,3 +35,8 @@ services:
 
 networks:
   wownet:
+
+
+volumes:
+  pgdata:
+  pglogs:
