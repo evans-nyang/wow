@@ -28,21 +28,21 @@ class UserRepository:
         session.commit()
     
     @staticmethod
-    def get_user_by_id(user_id):
+    def get_user_by_id(db, user_id):
         session = SessionLocal()
         return session.query(User).get(user_id)
 
     @staticmethod
-    def get_all_users():
+    def get_all_users(db):
         session = SessionLocal()
         return session.query(User).all()
     
     @staticmethod
-    def get_user_by_username(username):
+    def get_user_by_username(db, username):
         session = SessionLocal()
         return session.query(User).filter(User.username == username).first()
     
     @staticmethod
-    def get_user_by_email(email):
+    def get_user_by_email(db, email):
         session = SessionLocal()
         return session.query(User).filter(User.email == email).first()
