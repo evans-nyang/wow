@@ -2,9 +2,9 @@ import os
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
-
 from jose import jwt
 from passlib.context import CryptContext
+from starlette.responses import Response
 
 SECRET_KEY = os.environ.get("SECURITY_KEY")  # Replace with your own secret key
 ALGORITHM = "HS256"  # The algorithm to sign the JWT
@@ -45,3 +45,13 @@ def revoke_access_token(token: str) -> bool:
 
 def is_token_revoked(token: str) -> bool:
     return token in TOKEN_BLACKLIST
+
+def set_access_token_cookie(response: Response, access_token: str):
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        expires=datetime.utcnow() + timedelta(minutes=30),
+        httponly=True,
+        secure=True,
+        samesite="Strict",
+    )
