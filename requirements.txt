@@ -10,3 +10,4 @@ python-multipart
 cachetools
 python-dotenv
 psycopg[binary,pool]
+dependency-injector
