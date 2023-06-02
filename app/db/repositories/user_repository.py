@@ -1,12 +1,12 @@
 from app.db.models.user import User
-from app.db.base import Session
+from app.db.base import SessionLocal
 
 
 class UserRepository:
     @staticmethod
-    def create_user(user_data):
-        user = User(**user_data)
-        session = Session()
+    def create_user(username, email, password):
+        user = User(username=username, email=email, password=password)
+        session = SessionLocal()
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -16,23 +16,33 @@ class UserRepository:
     def update_user(user, updated_data):
         for key, value in updated_data.items():
             setattr(user, key, value)
-        session = Session()
+        session = SessionLocal()
         session.commit()
         session.refresh(user)
         return user
 
     @staticmethod
     def delete_user(user):
-        session = Session()
+        session = SessionLocal()
         session.delete(user)
         session.commit()
     
     @staticmethod
-    def get_user_by_id(user_id):
-        session = Session()
+    def get_user_by_id(db, user_id):
+        session = SessionLocal()
         return session.query(User).get(user_id)
 
     @staticmethod
-    def get_all_users():
-        session = Session()
+    def get_all_users(db):
+        session = SessionLocal()
         return session.query(User).all()
+    
+    @staticmethod
+    def get_user_by_username(db, username):
+        session = SessionLocal()
+        return session.query(User).filter(User.username == username).first()
+    
+    @staticmethod
+    def get_user_by_email(db, email):
+        session = SessionLocal()
+        return session.query(User).filter(User.email == email).first()

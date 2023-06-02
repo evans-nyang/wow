@@ -10,3 +10,7 @@ class Item(Base):
     title = Column(String, index=True)
     price = Column(Numeric)
     description = Column(String)
+    # image = Column(String)
+    # category_id = Column(Integer, ForeignKey("categories.id"))
+    # category = relationship("Category", back_populates="items")
+    

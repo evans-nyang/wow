@@ -160,3 +160,10 @@ cython_debug/
 #.idea/
 
 *.ini
+
+# Visual Studio Code
+.vscode/
+
+# Postgres local storage
+pgdata/
+pglogs/
