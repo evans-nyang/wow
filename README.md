@@ -19,8 +19,8 @@ Wow API is a backend application that serves as the core component for an e-comm
 - SQLAlchemy: an SQL toolkit and Object-Relational Mapping (ORM) library
 - PostgreSQL: a powerful, open-source relational database
 - Docker: a containerization platform used for easy deployment and scalability
-<!-- - Pytest: a testing framework for running unit tests -->
 - JWT: JSON Web Tokens for user authentication and authorization
+<!-- - Pytest: a testing framework for running unit tests -->
 
 ## Installation
 
