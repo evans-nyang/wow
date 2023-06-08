@@ -4,13 +4,11 @@ Wow API is a backend application that serves as the core component for an e-comm
 
 ## Features
 
-- User registration and authentication
-- User management (create, update, delete)
-- Product listing management (create, update, delete)
-- Order management (create, update, delete)
-- User reviews management (create, update)
-- User authentication using JSON Web Tokens (JWT)
-- Password hashing for secure storage
+- **Authentication**: Secure user authentication and authorization for accessing protected endpoints.
+- **Orders**: Create, update, and manage orders for products.
+- **Products**: Browse, search, and view product listings with detailed information.
+- **Reviews**: Users can leave reviews and ratings for products.
+- **Users**: Manage user accounts, profiles, and personal information.
 
 ## Technologies Used
 
@@ -19,10 +17,19 @@ Wow API is a backend application that serves as the core component for an e-comm
 - SQLAlchemy: an SQL toolkit and Object-Relational Mapping (ORM) library
 - PostgreSQL: a powerful, open-source relational database
 - Docker: a containerization platform used for easy deployment and scalability
+- Docker Compose: a tool for defining and running multi-container Docker applications
 - JWT: JSON Web Tokens for user authentication and authorization
 <!-- - Pytest: a testing framework for running unit tests -->
 
-## Installation
+## Getting Started
+
+### Prerequisites
+
+- Python (version >= 3.8)
+- Docker (version >= 20.10)
+- Docker Compose (version >= 1.29)
+
+### Installation
 
 1. Clone the repository:
 
@@ -44,7 +51,7 @@ Wow API is a backend application that serves as the core component for an e-comm
 
 4. The application will be running on `http://localhost:8000`
 
-## API Documentation
+### API Documentation
 
 The API documentation can be accessed through the Swagger UI interface. Open your browser and visit the following URL:
 
