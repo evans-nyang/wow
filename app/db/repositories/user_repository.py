@@ -13,10 +13,10 @@ class UserRepository:
         return user
 
     @staticmethod
-    def update_user(user, updated_data):
-        for key, value in updated_data.items():
-            setattr(user, key, value)
+    def update_user(username, email):
+        user = User(username=username, email=email)
         session = SessionLocal()
+        session.add(user)
         session.commit()
         session.refresh(user)
         return user
@@ -28,7 +28,7 @@ class UserRepository:
         session.commit()
     
     @staticmethod
-    def get_user_by_id(db, user_id):
+    def get_user_by_id(user_id):
         session = SessionLocal()
         return session.query(User).get(user_id)
 
