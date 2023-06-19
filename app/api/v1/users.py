@@ -21,14 +21,14 @@ def get_user(user_id: int):
 
 
 @router.post("/users")
-def create_user(user_data: dict):
-    user = user_service.create_user(user_data)
+def create_user(username: str, email: str, password: str):
+    user = user_service.create_user(username, email, password)
     return user
 
 
 @router.put("/users/{user_id}")
-def update_user(user_id: int, updated_data: dict):
-    user = user_service.update_user(user_id, updated_data)
+def update_user(user_id: int, username: str, email: str):
+    user = user_service.update_user(user_id, username, email)
     if user:
         return user
     return {"error": "User not found"}
