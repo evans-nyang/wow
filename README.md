@@ -19,7 +19,6 @@ Wow API is a backend application that serves as the core component for an e-comm
 - Docker: a containerization platform used for easy deployment and scalability
 - Docker Compose: a tool for defining and running multi-container Docker applications
 - JWT: JSON Web Tokens for user authentication and authorization
-<!-- - Pytest: a testing framework for running unit tests -->
 
 ## Getting Started
 
@@ -67,12 +66,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contributing
 
-Contributions are welcome! If you find any issues or have suggestions for improvement, please open an issue or submit a pull request.
-
-## Contact
-
-For any inquiries or questions, please contact the project maintainers:
-
-- Johnevans Nyawanga (<nyangjohnevans@outlook.com>)
-
-Feel free to reach out if you need any assistance or have any feedback.
+Contributions are welcome! Please see the [Contributing Guidelines](CONTRIBUTING.md) for more details.
