@@ -17,9 +17,26 @@ services:
       - .env
     networks:
       - wownet
+  
+  test_db: 
+    image: postgres:15
+    container_name: test_db
+    environment:
+      - POSTGRES_USER=${TEST_POSTGRES_USER} 
+      - POSTGRES_PASSWORD=${TEST_POSTGRES_PASSWORD} 
+      - POSTGRES_DB=${TEST_POSTGRES_DB} 
+    volumes:
+      - ./pgdb/test_pgdata:/var/lib/postgresql/data # Separate volume for test data
+    ports:
+      - ${TEST_PORT}:${TEST_PORT} # Separate port for test database
+    env_file:
+      - .env
+    networks:
+      - wownet
 
   app:
     build: .
+    container_name: app
     environment:
       - DATABASE_URL=${DATABASE_URL}
     env_file:
@@ -39,3 +56,4 @@ networks:
 volumes:
   pgdata:
   pglogs:
+  test_pgdata:
