@@ -1,110 +1,109 @@
-import os
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from pydantic import BaseModel
-
-from app.db.base import Base
-from app.api.v1 import auth, orders, products, users, reviews
-from app.services.user_service import UserService
-from app.db.repositories.user_repository import UserRepository
-from app.utils.security import create_access_token, verify_password
-
+from app.db.base import Base, engine
+from app.services.auth_service import AuthService
+from app.utils.security import verify_password
 from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from app.api.v1 import auth, orders, products, users, reviews
 
 load_dotenv()
 
+# Initialize the app
 app = FastAPI()
 
-# Database configuration
-DATABASE_URL = os.environ.get("DATABASE_URL")
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
 
-# Dependency injection
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# Security and authentication
+# OAuth2 authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def get_user_service(db=Depends(get_db)):
-    user_repository = UserRepository()
-    return UserService(user_repository)
+# Dependency injection for authentication
+auth_handler = AuthService()
 
-def authenticate_user(
-    username: str,
-    password: str,
-    user_service: UserService = Depends(get_user_service),
+# Endpoints for logged in users
+@app.get("/api/v1/users/me")
+async def get_current_user(
+    access_token: str = Depends(oauth2_scheme),
 ):
-    db = SessionLocal()
-    user = user_service.get_user_by_username(db, username)
+    """Get the current user's information."""
+
+    user = auth_handler.get_current_user(access_token)
     if not user:
-        return False
-    if not verify_password(password, user.password):
-        return False
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+
     return user
 
-
-def create_jwt_token(user_id: int):
-    encoded_jwt = jwt.encode({"user_id": user_id}, "secret_key", algorithm="HS256")
-    return encoded_jwt
-
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    user_service: UserService = Depends(get_user_service),
-    db=Depends(get_db),
+@app.post("/api/v1/users/me/change-password")
+async def change_password(
+    current_password: str,
+    new_password: str,
+    access_token: str = Depends(oauth2_scheme),
 ):
-    try:
-        payload = jwt.decode(token, "secret_key", algorithms=["HS256"])
-        user = user_service.get_user_by_id(db, payload["user_id"])
-        return user
-    except JWTError:
-        return None
+    """Change the current user's password."""
 
-class UserResponse(BaseModel):
-    user_id: int
-    username: str
-    email: str
+    user = auth_handler.get_current_user(access_token)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Weed on Wheels API!"}
+    if not verify_password(current_password, user.password):
+        return {"message": "Incorrect password"}
+
+    # Hash the new password
+    # hashed_password = hash_password(new_password)
+
+    # Update the user's password
+    auth_handler.change_password(current_password, new_password, access_token)
+    return {"message": "Password changed successfully"}
+
+# Endpoints for every other user before log in
+@app.post("/api/v1/auth/register")
+async def register(
+    username: str,
+    email: str,
+    password: str,
+):
+    """Register a new user."""
+
+    user = auth_handler.register_user(username, email, password)
+
+    return {"message": "User created successfully"}
 
 @app.post("/api/v1/auth/login")
-async def login(username: str, password: str, db=Depends(get_db)):
-    user_service = get_user_service(db)
-    user = authenticate_user(username=username, password=password, user_service=user_service)
-    if not user:
-        return {"message": "Invalid credentials"}
-    token = create_jwt_token(user.id)
-    return {"access_token": token, "token_type": "bearer"}
+async def login(
+    username: str,
+    password: str,
+):
+    """Log in the user."""
 
-@app.get("/api/v1/users/me", response_model=UserResponse)
-async def get_current_user_info(current_user=Depends(get_current_user)):
-    if not current_user:
+    return {"access_token": f"{auth_handler.login(username, password)}"}
+
+@app.get("/api/v1/auth/user")
+async def get_user(
+    access_token: str = Depends(oauth2_scheme),
+):
+    """Get the user information for the given access token."""
+
+    user = auth_handler.get_current_user(access_token)
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
-    return UserResponse(
-        user_id=current_user.id,
-        username=current_user.username,
-        email=current_user.email,
-    )
+
+    return user
+
+# Endpoint to log out the user
+@app.post("/api/v1/auth/logout")
+async def logout(
+    access_token: str = Depends(oauth2_scheme),
+):
+    """Log out the user."""
+
+    auth_handler.logout(access_token)
+    return {"message": "Logged out successfully"}
 
 # Include API routes
-app.include_router(auth.router, prefix="/api/v1")
-app.include_router(orders.router, prefix="/api/v1")
-app.include_router(products.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(reviews.router, prefix="/api/v1")
+# app.include_router(auth.router, prefix="/api/v1")
+# app.include_router(orders.router, prefix="/api/v1")
+# app.include_router(products.router, prefix="/api/v1")
+# app.include_router(users.router, prefix="/api/v1")
+# app.include_router(reviews.router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
